@@ -221,7 +221,7 @@
 	}
 	
 	//готовим БД
- 	private function _prepareDb($useCache = false){
+ 	private function _prepareDb($useCache = false, $enableProfiler = true){
 		
 		$config = Zend_Registry::get('config');
 		
@@ -240,6 +240,7 @@
 				    'dbname'   => $config['Database']['db_database_name'],
 				    'port' => $config['Database']['db_port'],
 					'charset'   => 'utf8',
+					'profiler' => $enableProfiler,
 					'options' => $options			
 			));
 		}
@@ -360,6 +361,8 @@
 		$_url = $this->prepareURL($_url);
 		$this->param['url'] = $_url;
 		
+		$this->prepareHTTPRequest(true);
+		
 		//processing them!
 		//ищем URL, сопоставимый с одним из таблицы 
 		//!TODO: быдлокод детектед
@@ -397,9 +400,8 @@
 		
 			//теперь обработка 
 			$_opt = array_merge($_rt_def, $_handler_url);			
-			
-			$this->process($_opt);
-			
+var_dump($this->param);			
+			$this->process($_opt);			
 	}
 	
 	
@@ -584,7 +586,9 @@
 				}
 
 				$data['debug']['memoryUsage'] = memory_get_peak_usage(true);
-				$data['debug']['systemLoad'] = sys_getloadavg();
+				
+				if (function_exists('sys_getloadavg') === true)
+					$data['debug']['systemLoad'] = sys_getloadavg();
 			}
 			
 			if ($opt['type'] == 'json')

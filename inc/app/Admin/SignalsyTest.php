@@ -19,4 +19,22 @@ class Admin_SignalsyTest
 		phpinfo();
 	}
 	
+	
+	static public function test_DB($data = Array(), $url = null, $isTest = false)
+	{
+		$db = Zend_Registry::get('db');
+		
+		$sql = 'SELECT message, message_at, message_type FROM messages_feed_tbl WHERE user_id = 2 ORDER BY message_at DESC LIMIT 50';
+		$res = $db->fetchAll($sql);
+		
+		
+		return Array(
+			'status' => 'OK',
+			'debug' => Array(
+				'params' => $data
+			),
+			'data' => $res
+		);	
+	}
+	
 }
